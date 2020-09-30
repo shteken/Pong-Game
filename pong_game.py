@@ -14,31 +14,21 @@ This version is built with object oriented paradigm
 
 import pygame
 
-class Game():
+class Game:
 
-    def __init__(self, FPS = 60):
+    def __init__(self, FPS = 60, width = 640, height = 480):
         self.clock = self.create_clock()
         self.mainloop = True
-        self.board = Board() # create the board you can configure the screen size here
-        self.wall_lines = {
-            'top': [(0, 0), (self.board.width, 0)],
-            'right': [(0, self.board.height), (self.board.width, self.board.height)],
-            'bottom': [(self.board.width, 0), (self.board.width, self.board.height)],
-        }
-        self.top_wall = Wall(self.board.background, self.wall_lines['top'])
-        self.right_wall = Wall(self.board.background, self.wall_lines['right'])
-        self.bottom_wall = Wall(self.board.background, self.wall_lines['bottom'])
+        self.width = width
+        self.height = height
+        self.board = Board(self.width, self.height)
 
     def create_clock(self):
         return pygame.time.Clock()
 
     def start_game(self):
         pygame.init()
-        self.board.create_background()
-        self.top_wall.create_wall()
-        self.right_wall.create_wall()
-        self.bottom_wall.create_wall()
-        self.board.create_board()
+        self.board.create_board() # create the board
         self.play()
 
     def is_end_game(self):
@@ -54,28 +44,45 @@ class Game():
             pygame.display.flip()
             self.is_end_game()
 
-class Board():
+class Board:
 
-    def __init__(self, width = 640, height = 480, color = (28, 28, 28)):
+    def __init__(self, width, height, color = (28, 28, 28)):
+
         self.width = width
         self.height = height
         self.color = color
-        self.screen = self.create_screen()
-        self.background = self.create_background()
+        self.wall_lines = {
+            'top': [(0, 0), (self.width, 0)],
+            'right': [(0, self.height), (self.width, self.height)],
+            'bottom': [(self.width, 0), (self.width, self.height)],
+        }
 
     def create_screen(self):
-        return pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((self.width, self.height)) # screen is created
+        return self.screen
     
     def create_background(self):
-        background = pygame.Surface(self.screen.get_size())
-        background.fill(self.color)
-        background = background.convert()
-        return background
+        self.background = pygame.Surface((self.width, self.height)) # background is created
+        self.background.fill(self.color)
+        self.background = self.background.convert()
+        return self.background
+
+    def create_walls(self):
+        self.top_wall = Wall(self.background, self.wall_lines['top']) 
+        self.right_wall = Wall(self.background, self.wall_lines['right'])
+        self.bottom_wall = Wall(self.background, self.wall_lines['bottom'])
+        self.top_wall.create_wall() # walls are created
+        self.right_wall.create_wall()
+        self.bottom_wall.create_wall()
+        return self.top_wall, self.right_wall, self.bottom_wall
 
     def create_board(self):
-        return self.screen.blit(self.background, (0,0))
+        self.create_screen()
+        self.create_background()
+        self.create_walls()
+        self.screen.blit(self.background, (0,0)) # board is drawn
 
-class Wall():
+class Wall:
 
     def __init__(self, background, coordinates, color = (170,170,170), wall_thickness = 30):
         self.background = background
@@ -85,7 +92,6 @@ class Wall():
 
     def create_wall(self):
         return pygame.draw.line(self.background, self.color, *self.coordinates, self.wall_thickness)   
-     
 
 if __name__ == '__main__':
     g = Game()
