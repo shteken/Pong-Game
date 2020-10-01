@@ -24,7 +24,7 @@ class Game:
         self.wall_thickness = wall_thickness
         self.screen = self.create_screen()
         self.board = Board(self.screen, self.width, self.height, self.wall_thickness)
-        self.bar = Bar(self.screen, self.board)
+        self.bar = Bar(self.screen)
 
     def create_clock(self):
         return pygame.time.Clock()
@@ -114,6 +114,7 @@ class Bar:
         self.color = color
     
     def create_bar(self):
+        print(self.bar_width, self.bar_height)
         self.barsurface = pygame.Surface((self.bar_width, self.bar_height))
         self.barsurface.set_colorkey((0, 0, 0))
         # pygame.draw.rect(surface, color, rect)
