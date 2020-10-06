@@ -51,7 +51,7 @@ class Game:
         while self.mainloop:
             self.is_end_game()
             self.board.draw_board()
-            mouse_x, mouse_y = pygame.mouse.get_pos()
+            _mouse_x, mouse_y = pygame.mouse.get_pos()
             self.bar.move_bar(mouse_y, self.wall_thickness, self.height)
             pygame.display.flip()
 
