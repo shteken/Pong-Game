@@ -1,9 +1,6 @@
 import pygame
 
-class MoveBarVisitor:
-    #def __init__(self):
-        
-
+class MoveBarVisitor:     
     def visit_board(self, board):
         self.walls = []
 
