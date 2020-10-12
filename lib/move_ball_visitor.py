@@ -1,10 +1,12 @@
 import pygame
 
 class MoveBallVisitor:
-    def __init__(self, seconds):
+    def __init__(self, game, seconds):
+        self.game = game
         self.seconds = seconds
 
     def visit_board(self, board):
+        self.board = board
         self.walls = []
 
     def visit_wall(self, wall):
@@ -37,5 +39,9 @@ class MoveBallVisitor:
         new_x += ball.dx * self.seconds
         new_y += ball.dy * self.seconds
         ball.move(new_x, new_y)
+
+        if new_x > self.board.width or new_y > self.board.height or new_x < 0 or new_y < 0:
+            self.game.end()
+
         
         
