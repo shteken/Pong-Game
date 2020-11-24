@@ -11,6 +11,9 @@ class MousePosition:
 
     def save_mouse_position(self, func):
         def save(*args, **kwargs):
+            """
+            save the time, x and y position of the mouse in data attribute
+            """
             self.counter += 1
             if self.counter % 5 == 0: # 1 sample per 5 frames
                 mouse_position = pygame.mouse.get_pos()
@@ -24,6 +27,9 @@ class MousePosition:
             return [{'user': user_name, 'game_id': str(game_id), 'time': time.strftime('%Y-%m-%dT%H:%M:%S.%f'), 'x': x, 'y': y} for time, (x, y) in data]
 
         def send(game):
+            """
+            send data to BigQuery, each element is a row in the table
+            """
             func(game)
             rows_to_insert = convert_data_to_json(self.data, game.user_name, game.game_id)
             client = bigquery.Client.from_service_account_json(self.credentials)

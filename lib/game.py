@@ -6,15 +6,16 @@ from move_ball_visitor import MoveBallVisitor
 from mouse_position import MousePosition
 from board import Board
 
+# specify here path to credentials and table_id
 positions = MousePosition('./valiant-nucleus-162210-628ad4c9fbe7.json', 'valiant-nucleus-162210.test.positions')
 
 class Game:
     def __init__(self, user_name):
         width = 640
         height = 480
-        FPS = 50
+        FPS = 50 # frames per second
         screen = pygame.display.set_mode((width, height)) # screen is created
-        clock = pygame.time.Clock()        #create pygame clock object
+        clock = pygame.time.Clock() # create pygame clock object
         milliseconds = clock.tick(FPS)  # milliseconds passed since last frame
         seconds = milliseconds / 1000.0 # seconds passed since last frame (float)
         self.user_name = user_name
@@ -26,9 +27,15 @@ class Game:
         self.move_ball_visitor = MoveBallVisitor(self, seconds)
 
     def accept(self, visitor):
+        """
+        visit objects
+        """
         visitor.visit_game(self)
 
     def handle_quit_event(self):
+        """
+        the user wants to quit the game
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.end() # pygame window closed by user
@@ -37,10 +44,16 @@ class Game:
                     self.end() # user pressed ESC
 
     def end(self):
+        """
+        exit the game
+        """
         self.mainloop = False
 
     @positions.save_mouse_position
     def change_frames(self):
+        """
+        check if the user exit the program, if no then each action visits each object
+        """
         self.handle_quit_event()
         self.board.accept(self.move_ball_visitor)
         self.board.accept(self.move_bar_visitor)
@@ -49,6 +62,9 @@ class Game:
 
     @positions.send_data
     def play(self):
+        """
+        initialize the game and run it
+        """
         pygame.init()
         while self.mainloop:
             #print(positions)
